@@ -1,4 +1,10 @@
 --[[
+	---------------------------------------------------------
+
+	Move Target by Object change by: KashTheKing
+
+	---------------------------------------------------------
+
 	@Author: Spynaz
 	@Description: Enables dragging on GuiObjects. Supports both mouse and touch.
 	
@@ -14,9 +20,10 @@ local DraggableObject 		= {}
 DraggableObject.__index 	= DraggableObject
 
 -- Sets up a new draggable object
-function DraggableObject.new(Object)
+function DraggableObject.new(Object, ObjectToMove)
 	local self 			= {}
 	self.Object			= Object
+	self.Target			= ObjectToMove
 	self.DragStarted	= nil
 	self.DragEnded		= nil
 	self.Dragged		= nil
@@ -30,6 +37,7 @@ end
 -- Enables dragging
 function DraggableObject:Enable()
 	local object			= self.Object
+	local target 			= self.Target or object
 	local dragInput			= nil
 	local dragStart			= nil
 	local startPos			= nil
@@ -39,7 +47,7 @@ function DraggableObject:Enable()
 	local function update(input)
 		local delta 		= input.Position - dragStart
 		local newPosition	= UDim2_new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-		object.Position 	= newPosition
+		target.Position 	= newPosition
 	
 		return newPosition
 	end
@@ -93,7 +101,7 @@ function DraggableObject:Enable()
 			
 			self.Dragging	= true
 			dragStart 		= input.Position
-			startPos 		= object.Position
+			startPos 		= target.Position
 		end
 		
 		if input == dragInput and self.Dragging then
